@@ -7,8 +7,9 @@ import { WebpackConfiguration } from "webpack-dev-server";
 
 const config: (env: { dev: boolean }) => WebpackConfiguration = ({ dev }) => ({
   entry: {
-    app: "./src/index",
+    app: "./src/index.tsx",
   },
+  target: 'electron-renderer',
   devServer: {
     port: 3000,
     hot: true,

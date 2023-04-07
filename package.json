@@ -2,6 +2,7 @@
   "name": "dsl-fui",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/main.js",
   "dependencies": {
     "@fluentui/react": "^8.107.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
@@ -12,17 +13,25 @@
     "@types/node": "^14.18.42",
     "@types/react": "^17.0.56",
     "@types/react-dom": "^17.0.19",
+    "concurrently": "^8.0.1",
     "electron": "^24.0.0",
+    "fork-ts-checker-webpack-plugin": "^8.0.0",
+    "fs": "^0.0.1-security",
     "mini-css-extract-plugin": "^2.7.5",
+    "path": "^0.12.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.1",
+    "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
     "web-vitals": "^1.1.2",
     "webpack-dev-server": "^4.13.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "webpack": "webpack serve --config ./webpack/renderer.ts --env dev",
+    "service": "webpack build --config ./webpack/main.ts --env dev",
+    "electron": "npm run service && electron .",
+    "start": "concurrently --kill-others -n Electron,Webpack npm:electron npm:webpack",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -44,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.0.1"
   }
 }

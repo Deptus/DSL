@@ -2,6 +2,8 @@ import { WebpackConfiguration } from "webpack-dev-server";
 import MiniCss from "mini-css-extract-plugin";
 import { WebpackPluginInstance } from 'webpack';
 import path from "path";
+import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
+import fs from 'fs'
 
 const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => WebpackConfiguration = ({ dev }, plugins = []) => ({
     mode: dev ? "development" : "production",
@@ -34,6 +36,6 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
       path: path.join(__dirname, "../dist"),
       filename: "[name].js",
     },
-    plugins: [...plugins],
+    plugins: [new ForkTsCheckerPlugin(), ...plugins],
  });
 export default config;
