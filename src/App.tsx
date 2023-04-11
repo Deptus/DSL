@@ -1,21 +1,13 @@
 import React from 'react';
-import { Stack, Text, Link, FontWeights, IStackTokens, IStackStyles, ITextStyles } from '@fluentui/react';
-import logo from './logo.svg';
-import './App.css';
-
-const boldStyle: Partial<ITextStyles> = { root: { fontWeight: FontWeights.semibold } };
-const stackTokens: IStackTokens = { childrenGap: 15 };
-const stackStyles: Partial<IStackStyles> = {
-  root: {
-    width: '960px',
-    margin: '0 auto',
-    textAlign: 'center',
-    color: '#605e5c',
-  },
-};
+import { Stack, Text, Link, FontWeights, IStackTokens, IStackStyles, ITextStyles, IButtonProps } from '@fluentui/react';
 
 export const App: React.FunctionComponent = () => {
   return (
-    <p> Hello </p>
+      <body>
+          <link rel="stylesheet" href="https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/office-ui-fabric-core/11.1.0/css/fabric.min.css"/>
+          <div>
+            
+          </div>
+      </body>
   );
 };
