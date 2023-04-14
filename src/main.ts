@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import LoginURL from './mslogin';
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
