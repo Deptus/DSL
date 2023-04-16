@@ -1,0 +1,6 @@
+.root {
+    height: 10%;
+    width: 100%;
+    background-color: azure;
+    backdrop-filter: blur(14px) saturate(150%);
+}

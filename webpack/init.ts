@@ -2,12 +2,23 @@ import { WebpackConfiguration } from "webpack-dev-server";
 import MiniCss from "mini-css-extract-plugin";
 import { WebpackPluginInstance } from 'webpack';
 import path from "path";
+import tsconfig from '../tsconfig.json'
 import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
-import fs from 'fs'
+
+function AliasGen() {
+  const { paths, baseUrl } = tsconfig.compilerOptions;
+  const aliases: { [key: string]: string } = {};
+  Object.entries(paths).forEach(([item, value]) => {
+    const key = item.replace("/*", "");
+    aliases[key] = path.resolve(baseUrl, value[0].replace("/*", "").replace("*", ""));
+  });
+  return aliases;
+}
+
 
 const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => WebpackConfiguration = ({ dev }, plugins = []) => ({
     mode: dev ? "development" : "production",
-    devtool: dev ? "inline-source-map" : undefined,
+    devtool: "source-map",
     module: {
       exprContextCritical: false,
       rules: [
@@ -21,7 +32,12 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
         },
         {
           test: /\.css$/,
-          use: [MiniCss.loader, "css-loader", "postcss-loader"],
+          use: [MiniCss.loader, {
+            loader: "css-loader",
+            options: {
+              modules: true
+            }
+          }, "postcss-loader"],
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,
@@ -31,6 +47,7 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
     },
     resolve: {
       extensions: [".js", ".ts", ".tsx"],
+      alias: AliasGen()
     },
     output: {
       path: path.join(__dirname, "../dist"),
