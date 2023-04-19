@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 export default function Render(root: Element): void {
     const Root = createRoot(root)
+    
     Root.render(<App/>);
 }
 
