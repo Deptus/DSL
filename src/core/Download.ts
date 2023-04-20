@@ -1,4 +1,4 @@
-import { request } from "https"
+import { Request } from "request"
 class Minecraft {
 
 }
@@ -37,9 +37,17 @@ class Modrinth {
             return ret;
         }
     }
-    GetRequest(versions? : string[], catergories? : string[]) {
-        const versionE = versions !== undefined
-        const catergoryE = catergories !== undefined
+    GetRequest(versions : string[] | 0, catergories : string[] | 0) {
+        const versionE = versions !== 0
+        const catergoryE = catergories !== 0
+        let ret: string = this.search + (versionE || catergoryE ? "&facets=[" : "")
+        if(versionE && catergoryE) {
+            ret += this.Catergory(catergories) + "," + this.Version(versions) + "]"
+            return ; // return Request.get
+        }
+        else if(versionE) {
+            
+        }
     }
 }
 class CurseForge {
