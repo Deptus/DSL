@@ -15,6 +15,7 @@
     "electron": "^24.0.0",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "fs": "^0.0.1-security",
+    "js-sha512": "^0.8.0",
     "log4js": "^6.9.1",
     "mini-css-extract-plugin": "^2.7.5",
     "path": "^0.12.7",
