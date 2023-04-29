@@ -55,21 +55,39 @@ namespace Download {
             ordering: number
         }
     }
-    interface ModrinthModFiles {
-        version?: string
-        hashes: {
-            sha512: string,
-            sha1: string
-        },
-        url: string,
-        filename: string,
-        primary: boolean,
-        size: number,
-        file_type: string
+    interface ModrinthVersions {
+        id: string,
+        project_id:string,
+        author_id: string,
+        featured: boolean,
+        name: string,
+        version_number: string,
+        changelog: string,
+        changelog_url: null | string,
+        date_published: string,
+        downloads: number,
+        version_type: "release" | any,
+        status: "listed" | any,
+        requested_status: null | string,
+        files: {
+            version?: string
+            hashes: {
+                sha512: string,
+                sha1: string
+            },
+            url: string,
+            filename: string,
+            primary: boolean,
+            size: number,
+            file_type: string
+        }[]
+        dependencies: string[],
+        game_versions: string[],
+        loaders: ("fabric" | "quilt" | "forge")[]
     }
     class Modrinth {
         private base = "https://api.modrinth.com/v2"
-        private search = this.base + "/search?limit=20&index=relevance"
+        private search = this.base + "/search?limit=10&index=relevance"
         Version(versions: string[]): string {
             if (versions.length === 1)
                 return "[\"version:" + versions[0] + "\"]"
@@ -143,13 +161,13 @@ namespace Download {
             else
                 return -1;
         }
-        Projects(id: string): ModrinthProject | -1 {
-            const url = "https://api.modrinth.com/v2/project/" + id + "/version"
-            let parsed: ModrinthProject | undefined;
+        Projects(slug: string): ModrinthVersions | -1 {
+            const url = "https://api.modrinth.com/v2/project/" + slug + "/version"
+            let parsed: ModrinthVersions | undefined;
             let ret = request.get({
                 url: url
             }, (err, response, body) => {
-                const retJSON: ModrinthProject = JSON.parse(body)
+                const retJSON: ModrinthVersions = JSON.parse(body)
                 parsed = retJSON
             });
 
@@ -157,11 +175,8 @@ namespace Download {
                 return parsed;
             return -1
         }
-        ModFiles(id: string) {
-            let versions: any = this.Projects(id)
-            if(versions === -1)
-                return -1;
-            versions = versions.game_versions;
+        ModFiles(plug: string) {
+            
             
         }
     }
@@ -178,7 +193,7 @@ namespace Download {
 
     }
     class OptiFine {
-
+        
     }
     class Downloader {
         Hash(file: ArrayBuffer) {
