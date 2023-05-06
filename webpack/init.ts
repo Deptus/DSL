@@ -23,11 +23,11 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
       exprContextCritical: false,
       rules: [
         {
-          test: /\.(ts|tsx)?$/,
+          test: /\.(tsx|ts)?$/,
           exclude: /node_modules/,
           loader: "ts-loader",
           options: {
-            transpileOnly: true,
+            
           },
         },
         {
@@ -43,6 +43,24 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
           test: /\.(png|jpe?g|gif|svg)$/i,
           loader: "file-loader",
         },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/, // 要排除
+          use: {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              "presets": [
+                ["@babel/preset-env", { modules: false }]
+              ],
+              "plugins": [
+                "@babel/plugin-transform-runtime",
+                "@babel/plugin-transform-regenerator"
+              ],
+            }
+          }
+        }
+
       ],
     },
     resolve: {

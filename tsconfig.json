@@ -23,7 +23,8 @@
     "paths": {
       "*": ["node_modules/*"],
       "assets/*": ["src/assets/*"],
-      "renderer/*": ["src/renderer/*"]
+      "renderer/*": ["src/renderer/*"],
+      "auth/*": ["src/core/authentication/*"]
     }
   },
   "include": [
