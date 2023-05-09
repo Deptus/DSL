@@ -1,9 +1,9 @@
 import axios from "axios";
 import { XboxLoginMS, XboxToken } from "./XboxLogin";
-import { XboxLogin } from "./TokenStore";
-export async function XSTSAuthMS() {
+import { UserData } from "../Store";
+export async function XSTSAuthMS(uuid: string) {
     return new Promise<XboxToken>(async (resolve) => {
-        const Xbox = await XboxLogin
+        const Xbox = await XboxLoginMS(uuid)
         const XBL = Xbox.Token;
         let UHS;
         Xbox.DisplayClaims.xui.forEach((value, index, array) => {
@@ -21,6 +21,7 @@ export async function XSTSAuthMS() {
         }
         axios.post("https://xsts.auth.xboxlive.com/xsts/authorize", formData).then((body) => {
             const ret: XboxToken = body.data;
+            UserData(uuid, "token", "xststoken", ret)
             resolve(ret)
         })
     })

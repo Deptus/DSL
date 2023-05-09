@@ -1,7 +1,5 @@
 import { app, BrowserWindow, ipcRenderer, protocol, ProtocolRequest } from 'electron';
 import 'auth/MSLogin';
-import { Log4js } from 'log4js';
-import axios from 'axios';
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";

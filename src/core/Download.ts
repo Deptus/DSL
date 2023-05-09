@@ -195,7 +195,7 @@ namespace Download {
     class OptiFine {
         
     }
-    class Downloader {
+    export class Downloader {
         Hash(file: ArrayBuffer) {
             return sha512(file)
         } 
@@ -227,7 +227,7 @@ namespace Download {
             const view = new Uint8Array(buffer)
             fs.writeFileSync(`${filePath}/${fileName}`, view)
         }
-        async MoveFile(fileName: string, from: string, to: string) {
+        public async MoveFile(fileName: string, from: string, to: string) {
             const buffer = fs.readFileSync(`${from}/${fileName}`)
             fs.rmSync(`${from}/${fileName}`)
             const view = new Uint8Array(buffer)

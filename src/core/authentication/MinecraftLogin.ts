@@ -1,5 +1,4 @@
 import got from "got"
-import { GCMS } from "./TokenStore"
 interface MCAccount {
     id: string,
     name: string,
@@ -11,8 +10,8 @@ interface MCAccount {
         alias: string
     }[]
 }
-export async function MCLoginMS() {
-    const res = await GCMS
+export async function MCLoginMS(GCMS: string | -1) {
+    const res = GCMS
     if(res === -1)
         return -1;
     else
