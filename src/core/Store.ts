@@ -13,3 +13,9 @@ export function UserData(uuid: string, upath: string, filename: string, file: an
     fs.writeFileSync(`${userPath}/${upath}/${filename}.json`, FileString)
     return;
 }
+interface Config {
+    profiles: number
+}
+export function Configure(): any {
+    
+}
