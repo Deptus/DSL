@@ -2,8 +2,7 @@ import React from 'react';
 import * as ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client'
 import { App } from './App';
-import { mergeStyles } from '@fluentui/react';
-import reportWebVitals from './reportWebVitals';
+
 
 export default function Render(root: Element): void {
     const Root = createRoot(root)

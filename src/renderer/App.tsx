@@ -1,10 +1,9 @@
 import React from 'react';
-import MenuBar from './components/MenuBar';
 import "./css/App.css"
-import { Stack } from '@fluentui/react';
+import { MCAuthMS } from 'auth/MinecraftAuth';
 
 export function App(): JSX.Element {
   return (
-      <MenuBar/>
+      <button onClick={MCAuthMS}> MCAuth </button>
   );
 };

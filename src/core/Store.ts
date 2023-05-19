@@ -1,8 +1,9 @@
+import { app, ipcRenderer } from "electron"
 import fs from "fs"
-import { app } from "electron"
-const path = app.getPath("appData")
+import path from "path"
+const storePath: string = "/home/encvar/Desktop"
 export function UserData(uuid: string, upath: string, filename: string, file: any): void {
-    const userPath = `${path}/${uuid}`
+    const userPath = `${storePath}/${uuid}`
     if(!fs.existsSync(userPath))
         fs.mkdirSync(userPath)
     if(!fs.existsSync(`${userPath}/${upath}`))

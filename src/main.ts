@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcRenderer, protocol, ProtocolRequest } from 'electron';
 import 'auth/MSLogin';
+import './core/Store'
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";

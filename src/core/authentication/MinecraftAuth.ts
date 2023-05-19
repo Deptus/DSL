@@ -13,13 +13,8 @@ export interface MCToken {
     token_type: string,
     expires_in: number
 }
-const opt = {
-    hostname: "https://api.minecraftservices.com",
-    port: 443,
-    path: '/authentication/login_with_xbox/',
-    method: 'POST'
-}
-export async function MCAuthMS(uuid: string = '0') {
+export async function MCAuthMS() {
+    let uuid: string = 'Profile0'
     return new Promise<MCToken | null>(async (resolve) => {
         const XSTSToken = await XSTSAuthMS(uuid)
         const formData = {
@@ -33,9 +28,13 @@ export async function MCAuthMS(uuid: string = '0') {
             throw new TokenException("nogame"), resolve(null)
         else {
             UserData(uuid, "token", "mcauth", ret)
-            
+            const mcl = await got.get("https://api.minecraftservices.com/minecraft/profile", {
+                headers: {
+                    Authorization: ret.access_token
+                }
+            }).json()
+            UserData(uuid, "token", "mclogin", ret)
         }
-            Download.Downloader
         resolve(ret)
     })
 }
