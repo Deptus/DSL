@@ -27,13 +27,13 @@ export async function MCAuthMS() {
         if(CG === -1)
             throw new TokenException("nogame"), resolve(null)
         else {
-            UserData(uuid, "token", "mcauth", ret)
+            await UserData(uuid, "token", "mcauth", ret)
             const mcl = await got.get("https://api.minecraftservices.com/minecraft/profile", {
                 headers: {
                     Authorization: ret.access_token
                 }
             }).json()
-            UserData(uuid, "token", "mclogin", ret)
+            await UserData(uuid, "token", "mclogin", ret)
         }
         resolve(ret)
     })

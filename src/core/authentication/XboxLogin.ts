@@ -29,9 +29,9 @@ export async function XboxLoginMS(uuid: string) {
             "RelyingParty": "http://auth.xboxlive.com",
             "TokenType": "JWT"
         }
-        axios.post("https://user.auth.xboxlive.com/user/authenticate", formData).then((body) => {
+        axios.post("https://user.auth.xboxlive.com/user/authenticate", formData).then(async (body) => {
             const ret: XboxToken = body.data
-            UserData(uuid, "token", "xboxtoken", ret)
+            await UserData(uuid, "token", "xboxtoken", ret)
             resolve(ret)
         })
     })

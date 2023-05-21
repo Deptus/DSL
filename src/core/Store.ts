@@ -2,7 +2,7 @@ import { app, ipcMain, ipcRenderer } from "electron"
 import fs from "fs"
 import path from "path"
 const storePath: string = "/home/encvar/Desktop"
-ipcMain.handle("userdata", (_event, uuid: string, upath: string, filename: string, file: any) => new Promise((resolve, reject) =>{
+ipcMain.handle("userdata", (_event, uuid: string, upath: string, filename: string, file: any) => new Promise<void>((resolve, reject) =>{
     const userPath = `${storePath}/${uuid}`
     if(!fs.existsSync(userPath))
         fs.mkdirSync(userPath)
