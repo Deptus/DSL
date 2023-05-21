@@ -1,7 +1,8 @@
 import { ipcRenderer } from "electron";
 import { getTokenMS } from "./TokenFetch"
 import axios from "axios";
-import { UserData } from "../Store";
+import UserData from "./UserData";
+
 export interface XboxToken {
     IssueInstant: string,
     NotAfter: string,

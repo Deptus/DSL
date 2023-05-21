@@ -1,6 +1,7 @@
 import axios from "axios";
+import UserData from "./UserData";
 import { XboxLoginMS, XboxToken } from "./XboxLogin";
-import { UserData } from "../Store";
+
 export async function XSTSAuthMS(uuid: string) {
     return new Promise<XboxToken>(async (resolve) => {
         const Xbox = await XboxLoginMS(uuid)

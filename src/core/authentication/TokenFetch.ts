@@ -2,7 +2,7 @@ import request from "request"
 import axios from "axios"
 import qs from "qs"
 import { Verifier } from "../../env"
-import { UserData } from "../Store"
+import UserData from "./UserData"
 
 interface MicrosoftToken {
     access_token: string,

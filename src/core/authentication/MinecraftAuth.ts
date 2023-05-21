@@ -2,8 +2,8 @@ import axios from "axios";
 import https from "https"
 import got from "got";
 import { XSTSAuthMS } from "./XSTSAuth";
-import { UserData } from "../Store";
 import { CheckGame } from "./GameCheck";
+import UserData from "./UserData";
 import TokenException from "./TokenException";
 import Download from "../Download";
 export interface MCToken {

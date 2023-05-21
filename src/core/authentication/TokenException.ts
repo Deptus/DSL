@@ -1,5 +1,5 @@
-export default class TokenException {
+export default class TokenException extends Error {
     constructor(reason: string) {
-        return `token.exception.${reason}`
+        super(reason)
     }
 }
