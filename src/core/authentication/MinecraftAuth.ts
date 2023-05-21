@@ -34,7 +34,7 @@ export async function MCAuthMS() {
                     Authorization: `Bearer ${ret.access_token}`
                 }
             }).json()
-            await UserData(uuid, "token", "mclogin", ret)
+            await UserData(uuid, "token", "mclogin", mcl)
         }
         resolve(ret)
     })
