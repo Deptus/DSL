@@ -1,7 +1,8 @@
 import { MCAuthMS } from "auth/MinecraftAuth";
 import React from "react";
-export function MainPage(): JSX.Element {
+import "./css/Entry.css"
+export function MainPage() {
     return (
-        <button onClick={MCAuthMS}> MCAuth </button>
+        <button className="w-48" onClick={MCAuthMS}> MCAuth </button>
     )
 }

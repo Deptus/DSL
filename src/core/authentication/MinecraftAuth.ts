@@ -30,7 +30,8 @@ export async function MCAuthMS() {
             await UserData(uuid, "token", "mcauth", ret)
             const mcl = await got.get("https://api.minecraftservices.com/minecraft/profile", {
                 headers: {
-                    Authorization: ret.access_token
+                    "Content-Type": "application.json",
+                    Authorization: `Bearer ${ret.access_token}`
                 }
             }).json()
             await UserData(uuid, "token", "mclogin", ret)

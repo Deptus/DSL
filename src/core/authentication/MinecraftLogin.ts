@@ -10,14 +10,14 @@ interface MCAccount {
         alias: string
     }[]
 }
-export async function MCLoginMS(GCMS: string | -1) {
+export async function MCLoginMS(GCMS: string | -1, token: string) {
     const res = GCMS
     if(res === -1)
         return -1;
     else
         console.log(await got.get("https://api.minecraftservices.com/minecraft/profile", {
             headers: {
-                Authorization: res
+                Authorization: `Bearer ${token}`
             }
         }).json())
 }
