@@ -4,6 +4,7 @@
   "private": true,
   "main": "dist/main.js",
   "dependencies": {
+    "@headlessui/react": "^1.7.14",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^13.5.0",
