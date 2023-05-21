@@ -15,7 +15,9 @@ export function UserData(uuid: string, upath: string, filename: string, file: an
     return;
 }
 interface Config {
-    profiles: number
+    profiles: number,
+    path: string,
+    last_login: Date
 }
 export function Configure(): any {
     

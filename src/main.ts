@@ -8,6 +8,8 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 
 function createWindow() {
     const win = new BrowserWindow({
+        minWidth: 800,
+        minHeight: 600,
         height: 600,
         width: 800,
         webPreferences: {
@@ -19,7 +21,7 @@ function createWindow() {
     if(dev) win.loadFile('dist/index.html')
     else win.loadURL('http://localhost:3500')
 }
-
+const path = app.getPath("appData")
 app.whenReady().then(() => {
     protocol.interceptFileProtocol(
         "resource",
@@ -29,4 +31,6 @@ app.whenReady().then(() => {
         }
     );
     createWindow();
+    console.log(path)
 })
+ 
