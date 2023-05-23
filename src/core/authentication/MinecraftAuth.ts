@@ -3,7 +3,7 @@ import https from "https"
 import got from "got";
 import { XSTSAuthMS } from "./XSTSAuth";
 import { CheckGame } from "./GameCheck";
-import UserData from "./UserData";
+import { WriteUserData } from "./UserData";
 import TokenException from "./TokenException";
 import Download from "../Download";
 export interface MCToken {
@@ -20,22 +20,22 @@ export async function MCAuthMS() {
         const formData = {
             "identityToken": `XBL3.0 x=${XSTSToken.DisplayClaims.xui[0].uhs};${XSTSToken.Token}`
         }
-        const ret = await got.post("https://api.minecraftservices.com/authentication/login_with_xbox", {
+        const MinecraftToken = await got.post("https://api.minecraftservices.com/authentication/login_with_xbox", {
             json: formData
         }).json() as MCToken
-        const CG = await CheckGame(ret)
+        const CG = await CheckGame(MinecraftToken)
         if(CG === -1)
-            throw new TokenException("nogame"), resolve(null)
+            throw new TokenException("The account has no game"), resolve(null)
         else {
-            await UserData(uuid, "token", "mcauth", ret)
+            await WriteUserData(uuid, "token", "mcauth", MinecraftToken)
             const mcl = await got.get("https://api.minecraftservices.com/minecraft/profile", {
                 headers: {
                     "Content-Type": "application.json",
-                    Authorization: `Bearer ${ret.access_token}`
+                    Authorization: `Bearer ${MinecraftToken.access_token}`
                 }
             }).json()
-            await UserData(uuid, "token", "mclogin", mcl)
+            await WriteUserData(uuid, "token", "mclogin", mcl)
         }
-        resolve(ret)
+        resolve(MinecraftToken)
     })
 }

@@ -2,7 +2,7 @@ import request from "request"
 import axios from "axios"
 import qs from "qs"
 import { Verifier } from "../../env"
-import UserData from "./UserData"
+import { WriteUserData } from "./UserData"
 
 interface MicrosoftToken {
     access_token: string,
@@ -18,7 +18,7 @@ function getTokenMS(code: string, uuid: string) {
             .then(async (body) => {
                 console.log(body.data)
                 const Data: MicrosoftToken = body.data
-                await UserData(uuid, "token", "mstoken", Data)
+                await WriteUserData(uuid, "token", "mstoken", Data)
                 resolve(Data)
             })
     })
