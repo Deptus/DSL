@@ -1,11 +1,11 @@
 import { WebpackConfiguration } from "webpack-dev-server";
 import webpack from 'webpack'
-import init from "./init";
+import base from "./base";
 const main: (env: { dev: boolean }) => WebpackConfiguration = ({ dev }) => ({
     entry: {
         main: "./src/main"
     },
     target: 'electron-main',
-    ...init({ dev })
+    ...base({ dev })
 })
 export default main;

@@ -1,29 +1,23 @@
 import axios from "axios";
-import UserData from "./UserData";
-import { XboxLoginMS, XboxToken } from "./XboxLogin";
+import { WriteUserData } from "./MCUserData";
+import { XboxToken } from "./XboxLogin";
 
-export async function XSTSAuthMS(uuid: string) {
+export async function XSTSAuth(profileName: string, xbl: string) {
     return new Promise<XboxToken>(async (resolve) => {
-        const Xbox = await XboxLoginMS(uuid)
-        const XBL = Xbox.Token;
-        let UHS;
-        Xbox.DisplayClaims.xui.forEach((value, index, array) => {
-            UHS = value.uhs
-        })
         const formData = {
             "Properties": {
                 "SandboxId": "RETAIL",
                 "UserTokens": [
-                    `${XBL}`
+                    `${xbl}`
                 ]
             },
             "RelyingParty": "rp://api.minecraftservices.com/",
             "TokenType": "JWT"
         }
         axios.post("https://xsts.auth.xboxlive.com/xsts/authorize", formData).then((body) => {
-            const ret: XboxToken = body.data;
-            UserData(uuid, "token", "xststoken", ret)
-            resolve(ret)
+            const Token: XboxToken = body.data;
+            WriteUserData(profileName, "token", "xststoken", Token)
+            resolve(Token)
         })
     })
 }

@@ -3,8 +3,8 @@ import fs from "fs"
 import path from "path"
 import StoreException from "./StoreException"
 const storePath: string = "/home/encvar/Desktop"
-ipcMain.handle("wuserdata", (_event, uuid: string, upath: string, filename: string, file: any) => new Promise((resolve, reject) =>{
-    const userPath = `${storePath}/${uuid}`
+ipcMain.handle("wuserdata", (_event, content: string, upath: string, filename: string, file: any) => new Promise((resolve, reject) =>{
+    const userPath = `${storePath}/${content}`
     if(!fs.existsSync(userPath))
         fs.mkdirSync(userPath)
     if(!fs.existsSync(`${userPath}/${upath}`))

@@ -8,5 +8,7 @@ export async function CheckGame(MCAuthToken: MCToken) {
             Authorization: `Bearer ${MCtoken}`
         }
     }).json()
-    return JWT ? MCtoken : -1 
+    if(JWT != null)
+        return false
+    return true
 } 
