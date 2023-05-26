@@ -1,1 +1,0 @@
-import Log4js from 'log4js'

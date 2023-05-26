@@ -6,16 +6,16 @@ interface MCProfile {
     name: string,
     skins: {
         id: string,
-        state: "ACTIVE",
+        state: string,
         url: string,
-        variant: "CLASSIC" | "THIN",
+        variant: string,
         alias: string
     }[]
 }
-export async function MCProfile(profileName: string,token: string) {
+export async function MCProfile(profileName: string, token: string) {
     const Profile = await got.get("https://api.minecraftservices.com/minecraft/profile", {
         headers: {
-            Authorization: `${token}`
+            Authorization: `Bearer ${token}`
         }
     }).json()
     WriteUserData(profileName, "token", "mcprofile", Profile)

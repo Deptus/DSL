@@ -3,6 +3,7 @@ import { WriteUserData } from "./MCUserData";
 import { XboxToken } from "./XboxLogin";
 
 export async function XSTSAuth(profileName: string, xbl: string) {
+    console.log(xbl)
     return new Promise<XboxToken>(async (resolve) => {
         const formData = {
             "Properties": {

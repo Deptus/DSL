@@ -24,7 +24,8 @@
       "*": ["node_modules/*"],
       "assets/*": ["src/assets/*"],
       "renderer/*": ["src/renderer/*"],
-      "auth/*": ["src/core/authentication/*"]
+      "auth/*": ["src/core/authentication/*"],
+      "src/*": ["src/*"]
     }
   },
   "include": [
