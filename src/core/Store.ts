@@ -2,7 +2,7 @@ import { app, ipcMain, ipcRenderer } from "electron"
 import fs from "fs"
 import path from "path"
 import StoreException from "./StoreException"
-const storePath: string = "/home/encvar/Desktop"
+const storePath: string = app.getPath("desktop")
 ipcMain.handle("wuserdata", (_event, content: string, upath: string, filename: string, file: any) => new Promise((resolve, reject) =>{
     const userPath = `${storePath}/${content}`
     if(!fs.existsSync(userPath))
