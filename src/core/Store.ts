@@ -1,8 +1,7 @@
 import { app, ipcMain, ipcRenderer } from "electron"
 import fs from "fs"
-import path from "path"
 import StoreException from "./StoreException"
-const storePath: string = app.getPath("desktop")
+const storePath: string = app.getPath("userData")
 ipcMain.handle("wuserdata", (_event, content: string, upath: string, filename: string, file: any) => new Promise((resolve, reject) =>{
     const userPath = `${storePath}/${content}`
     if(!fs.existsSync(userPath))
@@ -15,17 +14,11 @@ ipcMain.handle("wuserdata", (_event, content: string, upath: string, filename: s
     fs.writeFileSync(`${userPath}/${upath}/${filename}.json`, FileString)
     resolve(1)
 }))
-interface Config {
-    profile_amount: number,
-    path: string,
-    last_login: Date
-}
-//Add configure
-function Configure(opt: "profiles" | "path" | "last_login", value: number | string | Date) {
-    switch(opt) {
-        case "profiles":
-            if(!(typeof value === "number"))
-                throw new StoreException(`Profile Amount must be a number but read a ${typeof value}`)
-            
+const configPath = `${storePath}/config.json`
+if(!fs.existsSync(configPath)) {
+    const configFile = {
+        profile_amount: 0,
+        logged_in: false,
     }
+    fs.writeFileSync(configPath, JSON.stringify(configFile))
 }

@@ -1,6 +1,6 @@
 import got from "got"
-import TokenException from "./TokenException";
 import { WriteUserData } from "./MCUserData";
+import { ipcRenderer } from "electron";
 interface MCProfile {
     id: string,
     name: string,
@@ -17,6 +17,7 @@ export async function MCProfile(profileName: string, token: string) {
         headers: {
             Authorization: `Bearer ${token}`
         }
-    }).json()
+    }).json() as MCProfile
     WriteUserData(profileName, "token", "mcprofile", Profile)
+    ipcRenderer.invoke("config", "logged_in", true)
 }
