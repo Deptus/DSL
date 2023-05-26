@@ -1,6 +1,6 @@
 import Entry from "./Entry";
 import React from "react";
-import "./css/Entry.css"
+import "./css/main.css"
 import { AuthenticateMC } from "src/core/Authenticate";
 export function MainPage() {
     return (

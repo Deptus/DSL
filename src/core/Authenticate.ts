@@ -20,6 +20,7 @@ export async function AuthenticateMC() {
         const XboxToken = await XboxLogin(profileName, OAuthToken)
         authLogger(XboxToken.Token)
         const XBL = XboxToken.Token;
+        console.log(XBL)
         const XSTSToken = await XSTSAuth(profileName, XBL)
         authLogger(XSTSToken.Token)
         const MinecraftToken = await MCAuth(profileName, XSTSToken)

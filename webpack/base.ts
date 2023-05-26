@@ -32,12 +32,7 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
         },
         {
           test: /\.css$/,
-          use: [MiniCss.loader, {
-            loader: "css-loader",
-            options: {
-              modules: true
-            }
-          }, "postcss-loader"],
+          use: [MiniCss.loader, "css-loader", "postcss-loader"],
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,

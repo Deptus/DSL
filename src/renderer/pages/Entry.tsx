@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/Entry.css"
+import "./css/main.css"
 export default function Entry() {
     return (
         <>
