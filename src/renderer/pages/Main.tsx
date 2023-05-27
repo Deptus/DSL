@@ -1,6 +1,8 @@
 import Entry from "./Entry";
 import React from "react";
 import "./css/main.css"
+import { Button } from "dsl-rcs"
+
 import { AuthenticateMC } from "src/core/Authenticate";
 export function MainPage() {
     return (
