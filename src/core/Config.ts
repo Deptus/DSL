@@ -13,6 +13,7 @@ interface Config {
     logged_in: boolean,
     last_login?: Date,
     Xbox_expire_date?: Date,
+    JVM_params?: string,
 }
 //Add configure
 export function Configure(opt: string, value: any) {
@@ -24,7 +25,7 @@ export function Configure(opt: string, value: any) {
         case "last_login":
             configFile.last_login = value
             break
-        case "XSTS_expire_date":
+        case "Xboxs_expire_date":
             configFile.Xbox_expire_date = value
             break
         case "logged_in":
@@ -36,4 +37,4 @@ export function Configure(opt: string, value: any) {
     fs.rmSync(`${storePath}/config.json`);
     fs.writeFileSync(`${storePath}/config.json`, JSON.stringify(configFile))
 }
-ipcMain.handle("config", (event, opt, value) => Configure(opt, value))
+ipcMain.handle("config", (_event, opt, value) => Configure(opt, value))

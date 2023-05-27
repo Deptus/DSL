@@ -1,6 +1,7 @@
 import { MicrosoftOAuthToken } from "./TokenFetch"
 import { WriteUserData } from "./MCUserData";
 import got from "got";
+import { ipcRenderer } from "electron";
 
 export interface XboxToken {
     IssueInstant: string,
@@ -33,5 +34,13 @@ export async function XboxLogin(profileName: string, token: MicrosoftOAuthToken)
         }
     }).json()
     await WriteUserData(profileName, "token", "xboxtoken", XboxAuthToken)
+    const ExpireDate = XboxAuthToken.NotAfter
+    {
+        const Year = ExpireDate.substring(0, 4)
+        const Month = ExpireDate.substring(5, 7)
+        const Day = ExpireDate.substring(8, 10)
+        const Date = { year: parseInt(Year), month: parseInt(Month), day: parseInt(Day) }
+        ipcRenderer.invoke("config", "Xbox_expire_date", Date)
+    }
     return (XboxAuthToken)
 } 

@@ -23,3 +23,7 @@ export async function AuthenticateMC() {
         throw e
     }
 }
+
+export async function RefreshToken() {
+    
+}
