@@ -22,15 +22,7 @@ function createWindow() {
         }
     })
 
-    const windowBounds = win.getBounds();
-    const windowShape = [
-        { x: 0, y: 0 },
-        { x: windowBounds.width, y: 0 },
-        { x: windowBounds.width, y: windowBounds.height - 20 },
-        { x: windowBounds.width - 20, y: windowBounds.height },
-        { x: 0, y: windowBounds.height },
-    ].map(({ x, y }) => ({ x, y, height: 0, width: 0 }));
-    win.setShape(windowShape);
+
 
     if(dev) win.loadFile('dist/index.html')
     else win.loadURL('http://localhost:3500')

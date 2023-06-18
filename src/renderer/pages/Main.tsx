@@ -7,7 +7,7 @@ import { ipcRenderer } from "electron";
 import { AuthenticateMC } from "src/core/Authenticate";
 
 async function downloader() {
-    ipcRenderer.invoke("downloadfile", "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json", "C:/Users/GBC03/Desktop", "test.json", 4)
+    ipcRenderer.invoke("downloadfile", "http://10.20.252.249/file/4/tWb-Qb32V0qS3MW4r2Pfm.png", "/home/encvar/Desktop", "test", 10)
 }
 export function MainPage() {
     return (
