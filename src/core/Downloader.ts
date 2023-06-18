@@ -38,9 +38,11 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
     const workers = []
     if(!response.headers.get('Content-Length'))
       concurrently = 1;
+    let downloaded = 0
     for(let i = 0; i < concurrently; i++) {
-        const start = i * chunks / concurrently
-        let end = (i + 1) * chunks / concurrently
+        const start = downloaded
+        let end = Math.floor((i + 1) * chunks / concurrently)
+        downloaded = end;
         if(i == concurrently - 1)
           end = chunks
         console.log(`Downloading chunk ${i} of ${concurrently}, from ${start} to ${end}`)

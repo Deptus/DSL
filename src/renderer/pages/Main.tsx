@@ -7,7 +7,7 @@ import { ipcRenderer } from "electron";
 import { AuthenticateMC } from "src/core/Authenticate";
 
 async function downloader() {
-    ipcRenderer.invoke("downloadfile", "http://10.20.252.249/file/4/tWb-Qb32V0qS3MW4r2Pfm.png", "/home/encvar/Desktop", "test", 10)
+    ipcRenderer.invoke("downloadfile", "https://www.electronjs.org/assets/marketing/auto-updater.png", "C:/Users/GBC03/Desktop", "test", 10)
 }
 export function MainPage() {
     return (
