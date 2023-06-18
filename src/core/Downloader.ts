@@ -7,6 +7,8 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
     const filelength = response.headers.get('Content-Length') ? response.headers.get('Content-Length')! : "1000000000"
     console.log(`File is ${filelength} bytes long`)
     const chunks = Math.ceil(parseInt(filelength) / (1024 * 1024))
+    if(fs.existsSync(path.join(filepath, filename)))
+        fs.rmSync(path.join(filepath, filename))
     const fileStream = fs.createWriteStream(path.join(filepath, filename))
     for(let i = 0; i < concurrently; i++) {
         const start = i * chunks / concurrently
