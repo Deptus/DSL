@@ -43,7 +43,7 @@
     "service": "webpack build --config ./webpack/main.ts --env dev",
     "electron": "npm run service && electron .",
     "start": "concurrently --kill-others -n Electron,Webpack npm:electron npm:webpack",
-    "build": "react-scripts build",
+    "build": "webpack build --config ./webpack/renderer.ts --env dev",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
