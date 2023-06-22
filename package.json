@@ -42,11 +42,10 @@
     "webpack": "webpack serve --config ./webpack/renderer.ts --env dev",
     "service": "webpack build --config ./webpack/main.ts --env dev",
     "electron": "npm run service && electron .",
-    "start": "electron-forge start",
+    "start": "concurrently --kill-others -n Electron,Webpack npm:electron npm:webpack",
     "build": "webpack build --config ./webpack/renderer.ts --env dev",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "make": "electron-forge make",
     "package": "electron-forge package"
   },
   "eslintConfig": {

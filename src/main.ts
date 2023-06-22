@@ -7,7 +7,8 @@ import './core/Downloader'
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
-
+if(!dev)
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 function createWindow() {
     const win = new BrowserWindow({

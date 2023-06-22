@@ -13,6 +13,7 @@ async function combineChunks(filepath: string, filename: string, numChunks: numb
       inputStream.on('end', resolve);
     });
     fs.unlinkSync(chunkPath);
+    fs.rmSync(chunkPath)
   }
   outputStream.end();
 }
@@ -84,4 +85,9 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
     console.log('Download complete!');
     return 0;
 }
+
+async function getPath(name: 'home' | 'appData' | 'userData' | 'sessionData' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps') {
+  return app.getPath(name)
+}
+ipcMain.handle('getpath', (_event, Pathname: 'home' | 'appData' | 'userData' | 'sessionData' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps') => getPath(Pathname))
 ipcMain.handle('downloadfile', (_event, url: string, filepath: string, filename: string, concurrently: number) => DownloadFile(url, filepath, filename, concurrently))
