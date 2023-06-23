@@ -13,7 +13,6 @@ async function combineChunks(filepath: string, filename: string, numChunks: numb
       inputStream.on('end', resolve);
     });
     fs.unlinkSync(chunkPath);
-    fs.rmSync(chunkPath)
   }
   outputStream.end();
 }
@@ -79,15 +78,64 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
     }
 
     await Promise.all(workers.map((worker) => new Promise((resolve) => {
-      worker.on('message', resolve);
+      worker.on('message', (value) => { console.log(value); resolve(value) });
     })));
     await combineChunks(filepath, filename, concurrently);
     console.log('Download complete!');
     return 0;
 }
 
-async function getPath(name: 'home' | 'appData' | 'userData' | 'sessionData' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps') {
-  return app.getPath(name)
+const home = app.getPath('home')
+const appData = app.getPath('appData')
+const userData = app.getPath('userData')
+const temp = app.getPath('temp')
+const exe = app.getPath('exe')
+const module = app.getPath('module')
+const desktop = app.getPath('desktop')
+const documents = app.getPath('documents')
+const downloads = app.getPath('downloads')
+const music = app.getPath('music')
+const pictures = app.getPath('pictures')
+const videos = app.getPath('videos')
+const recent = app.getPath('recent')
+const logs = app.getPath('logs')
+const crashDumps = app.getPath('crashDumps')
+
+async function getPath(name: string) {
+  switch(name) {
+    case 'home':
+      return home
+    case 'appData':
+      return appData
+    case 'userData':
+      return userData
+    case 'temp':
+      return temp
+    case 'exe':
+      return exe
+    case 'module':
+      return module
+    case 'desktop':
+      return desktop
+    case 'documents':
+      return documents
+    case 'downloads':
+      return downloads
+    case 'music':
+      return music
+    case 'pictures':
+      return pictures
+    case 'videos':
+      return videos
+    case 'recent':
+      return recent
+    case 'logs':
+      return logs
+    case 'crashDumps':
+      return crashDumps
+    default:
+      throw new Error('Invalid path name')
+  }
 }
-ipcMain.handle('getpath', (_event, Pathname: 'home' | 'appData' | 'userData' | 'sessionData' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps') => getPath(Pathname))
-ipcMain.handle('downloadfile', (_event, url: string, filepath: string, filename: string, concurrently: number) => DownloadFile(url, filepath, filename, concurrently))
+ipcMain.handle('getpath', async(_event, Pathname: string) => getPath(Pathname))
+ipcMain.handle('downloadfile', async (_event, url: string, filepath: string, filename: string, concurrently: number) => DownloadFile(url, filepath, filename, concurrently))
