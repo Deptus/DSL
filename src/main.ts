@@ -9,6 +9,8 @@ const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 if(!dev)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -18,18 +20,16 @@ function createWindow() {
         width: 800,
         frame: false,
         webPreferences: {
+            preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
             nodeIntegration: true,
             contextIsolation: false,
         }
     })
 
-
-
     if(dev) win.loadFile('dist/index.html')
-    else win.loadURL('http://localhost:3500')
+    else win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
     win.once('ready-to-show', () => { win.show() })
-
 }
 const path = app.getPath("appData")
 app.whenReady().then(() => {

@@ -4,6 +4,7 @@
   "private": true,
   "main": "dist/main.js",
   "dependencies": {
+    "@electron-forge/cli": "^6.2.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^13.5.0",
@@ -41,11 +42,9 @@
   "scripts": {
     "webpack": "webpack serve --config ./webpack/renderer.ts --env dev",
     "service": "webpack build --config ./webpack/main.ts --env dev",
-    "electron": "npm run service && electron .",
-    "start": "concurrently --kill-others -n Electron,Webpack npm:electron npm:webpack",
+    "electron": "electron-forge start",
+    "start": "electron-forge start",
     "build": "webpack build --config ./webpack/renderer.ts --env dev",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "package": "electron-forge package"
   },
   "eslintConfig": {
@@ -69,7 +68,6 @@
   "devDependencies": {
     "@babel/plugin-transform-regenerator": "^7.21.5",
     "@babel/plugin-transform-runtime": "^7.0.0",
-    "@electron-forge/cli": "^6.2.1",
     "@electron-forge/maker-deb": "^6.2.1",
     "@electron-forge/maker-rpm": "^6.2.1",
     "@electron-forge/maker-squirrel": "^6.2.1",

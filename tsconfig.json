@@ -11,7 +11,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -21,14 +20,13 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*", "node_modules/@types/*"],
+      "*": ["node_modules/*"],
       "assets/*": ["src/assets/*"],
       "renderer/*": ["src/renderer/*"],
       "auth/*": ["src/core/authentication/*"],
       "src/*": ["src/*"]
     }
   },
-  "typeRoots": ["node_modules/@types"],
   "include": [
     "src"
   ]
