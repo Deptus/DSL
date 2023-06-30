@@ -1,2 +1,2 @@
 # DSL-FUI
-A laucher based on FluentUI and React
+A laucher based on Electron and React
