@@ -1,8 +1,12 @@
 {
-  "name": "dsl-fui",
+  "name": "dsl",
   "version": "0.1.0",
   "private": true,
   "main": "dist/main.js",
+  "author": {
+    "name": "EncVar and Fiorest"
+  },
+  "description": "A new multi-function Minecraft launcher",
   "dependencies": {
     "@electron-forge/cli": "^6.2.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
@@ -34,6 +38,7 @@
     "tailwind": "^4.0.0",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
+    "utils": "^0.3.1",
     "web-vitals": "^1.1.2",
     "webpack": "^5.81.0",
     "webpack-dev-server": "^4.13.3",
@@ -42,10 +47,11 @@
   "scripts": {
     "webpack": "webpack serve --config ./webpack/renderer.ts --env dev",
     "service": "webpack build --config ./webpack/main.ts --env dev",
-    "electron": "electron-forge start",
-    "start": "electron-forge start",
+    "electron": "npm run service && electron-forge start",
+    "start": "concurrently --kill-others -n Webpack,Electron npm:webpack npm:electron",
     "build": "webpack build --config ./webpack/renderer.ts --env dev",
-    "package": "electron-forge package"
+    "package": "electron-forge package",
+    "make": "npm run build && electron-forge make"
   },
   "eslintConfig": {
     "extends": [

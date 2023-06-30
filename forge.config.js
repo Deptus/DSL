@@ -7,12 +7,15 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        
+        name: "DSL"
       },
     },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
+      config: {
+        name: "DSL"
+      }
     },
     {
       name: '@electron-forge/maker-deb',
@@ -27,21 +30,6 @@ module.exports = {
     {
       name: '@electron-forge/plugin-auto-unpack-natives',
       config: {},
-    },
-    {
-
-      name: '@electron-forge/plugin-webpack',
-      config: {
-        mainConfig: './webpack/main.ts',
-        type: 'module',
-        renderer: {
-          config: './webpack/renderer.ts',
-          entryPoints: [{
-            name: 'main_window',
-            ts: './src/renderer/main.tsx',
-          }]
-        }
-      }
     }
   ],
 };
