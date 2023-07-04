@@ -4,7 +4,7 @@ export default function Entry() {
     return (
         <>
             <h1>
-                shit
+                Hello, World
             </h1>
         </>
     )

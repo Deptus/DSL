@@ -25,7 +25,7 @@ function formatMatch(url: string) {
   return -1
 }
 
-async function DownloadFile(url: string, filepath: string, filename: string, concurrently: number) {
+export async function DownloadFile(url: string, filepath: string, filename: string, concurrency: number) {
     const response = await fetch(url)
     const formatMatched = formatMatch(url)
     const format = formatMatched != -1 ? formatMatched : ""
@@ -36,16 +36,18 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
     if(fs.existsSync(path.join(filepath, filename)))
         fs.rmSync(path.join(filepath, filename))
     const workers = []
+    const worker_size = []
     if(!response.headers.get('Content-Length'))
-      concurrently = 1;
+      concurrency = 1;
     let downloaded = 0
-    for(let i = 0; i < concurrently; i++) {
+    for(let i = 0; i < concurrency; i++) {
         const start = downloaded
-        let end = Math.floor((i + 1) * chunks / concurrently)
+        let end = Math.floor((i + 1) * chunks / concurrency)
+        worker_size.push(end - start)
         downloaded = end;
-        if(i == concurrently - 1)
+        if(i == concurrency - 1)
           end = chunks
-        console.log(`Downloading chunk ${i} of ${concurrently}, from ${start} to ${end}`)
+        console.log(`Downloading chunk ${i} of ${concurrency}, from ${start} to ${end}`)
         const tempPath = app.getPath('temp')
         const worker = new Worker(`
         const { parentPort, workerData } = require('worker_threads');
@@ -61,7 +63,6 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
             res.pipe(stream);
             res.on('end', () => {
               stream.close();
-              parentPort.postMessage(\`Downloaded chunk \${start}-\${end}\`);
             });
           });
         else
@@ -70,7 +71,6 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
             res.pipe(stream);
             res.on('end', () => {
               stream.close();
-              parentPort.postMessage(\`Downloaded chunk \${start}-\${end}\`);
             });
           });
       `, { eval: true, workerData: { url, start, end, tempPath } });
@@ -80,7 +80,7 @@ async function DownloadFile(url: string, filepath: string, filename: string, con
     await Promise.all(workers.map((worker) => new Promise((resolve) => {
       worker.on('message', (value) => { console.log(value); resolve(value) });
     })));
-    await combineChunks(filepath, filename, concurrently);
+    await combineChunks(filepath, filename, concurrency);
     console.log('Download complete!');
     return 0;
 }
@@ -138,4 +138,4 @@ async function getPath(name: string) {
   }
 }
 ipcMain.handle('getpath', async(_event, Pathname: string) => getPath(Pathname))
-ipcMain.handle('downloadfile', async (_event, url: string, filepath: string, filename: string, concurrently: number) => DownloadFile(url, filepath, filename, concurrently))
+ipcMain.handle('downloadfile', async (_event, url: string, filepath: string, filename: string, concurrency: number) => DownloadFile(url, filepath, filename, concurrency))
