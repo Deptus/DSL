@@ -4,6 +4,7 @@ import './core/Store'
 import './core/Logger'
 import './core/Config'
 import './core/Downloader'
+import './core/minecraft/download/minecraft'
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
