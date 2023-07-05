@@ -81,7 +81,6 @@
     "@electron-forge/plugin-auto-unpack-natives": "^6.2.1",
     "@electron-forge/plugin-webpack": "^6.2.1",
     "@types/react-dom": "^18.0.11",
-    "@types/request": "^2.48.8",
     "electron": "^25.2.0",
     "postcss-loader": "^7.0.2",
     "style-loader": "^3.3.3",
