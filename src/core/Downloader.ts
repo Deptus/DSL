@@ -71,22 +71,18 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
+                    parentPort.postMessage("Finished downloading chunk " + order + " of " + ${concurrency});
                 });
-            }).on("downloadProgress", ({ percent }) => {
-                const percentage = Math.floor(percent * 100);
-                parentPort.postMessage(percentage);
-            });
+            })
         else
             https.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
                 const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.tmp\`));
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
+                    parentPort.postMessage("Finished downloading chunk " + order + " of " + ${concurrency});
                 });
-            }).on("downloadProgress", ({ percent }) => {
-                const percentage = Math.floor(percent * 100);
-                parentPort.postMessage(percentage);
-            });
+            })
       `, { eval: true, workerData: { url, start, end, tempPath } });
         workers.push(worker)
     }

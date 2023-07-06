@@ -19,6 +19,9 @@ function AliasGen() {
 const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => WebpackConfiguration = ({ dev }, plugins = []) => ({
     mode: dev ? "development" : "production",
     devtool: "source-map",
+    experiments: {
+      topLevelAwait: true,
+    },
     module: {
       exprContextCritical: false,
       rules: [

@@ -68,32 +68,43 @@ export interface AssetObject {
 }
 
 export async function DownloadAsset(index: AssetIndex) {
-    fs.mkdirSync(`${gamePath}/assets/indexes`);
-    fs.mkdirSync(`${gamePath}/assets/objects`);
-    fs.mkdirSync(`${gamePath}/assets/virtual/legacy`);
+    if(!fs.existsSync(`${gamePath}/assets`))
+        fs.mkdirSync(`${gamePath}/assets`)
+    if(!fs.existsSync(`${gamePath}/assets/indexes`))
+        fs.mkdirSync(`${gamePath}/assets/indexes`);
+    if(!fs.existsSync(`${gamePath}/assets/objects`))
+        fs.mkdirSync(`${gamePath}/assets/objects`);
+    if(!fs.existsSync(`${gamePath}/assets/virtual`))
+        fs.mkdirSync(`${gamePath}/assets/virtual`);
+    if(!fs.existsSync(`${gamePath}/assets/virtual/legacy`))
+        fs.mkdirSync(`${gamePath}/assets/virtual/legacy`);
     //indexes
-    DownloadFile(index.url, `${gamePath}/assets/indexes/${index.id}.json`, 1);
+    await DownloadFile(index.url, `${gamePath}/assets/indexes`, 1, 0, "");
     //objects
     const objects = await got.get(index.url).json<AssetObject>();
     const objectsInfo = objects.objects
     let i = 0, j = 0;
-    let DownloadList: string[][] = [];
-    let DownloadPath: string[][] = [];
-    let DownloadFormat: string[][] = [];
+    const DownloadList: Array<string>[] = [];
+    const DownloadPath: Array<string>[] = [];
+    const DownloadFormat: Array<string>[] = [];
     for(let object in objectsInfo) {
-        fs.mkdirSync(`${gamePath}/assets/objects/${objectsInfo[object].hash.substring(0, 2)}`);
+        const TDownloadList: Array<string> = [];
+        const TDownloadPath: Array<string> = [];
+        const TDownloadFormat: Array<string> = [];
+        if(!fs.existsSync(`${gamePath}/assets/objects/${objectsInfo[object].hash.substring(0, 2)}`))
+            fs.mkdirSync(`${gamePath}/assets/objects/${objectsInfo[object].hash.substring(0, 2)}`);
         let format: string | -1 = nameMatch(object, false);
         if(format === -1)
             throw new Error(`Unknown asset format: ${object}`);
         else
-            DownloadFormat[j].push(format);
-        DownloadList[j].push(`https://resources.download.minecraft.net/${objectsInfo[object].hash.substring(0, 2)}/${objectsInfo[object].hash}`);
-        DownloadPath[j].push(`${gamePath}/assets/objects/${objectsInfo[object].hash.substring(0, 2)}/${objectsInfo[object].hash}`);
+            TDownloadFormat.push(format);
+        TDownloadList.push(`https://resources.download.minecraft.net/${objectsInfo[object].hash.substring(0, 2)}/${objectsInfo[object].hash}`);
+        TDownloadPath.push(`${gamePath}/assets/objects/${objectsInfo[object].hash.substring(0, 2)}`);
         i++;
-        if(i % 10 == 0)
-            j++;
+        if(i % 5 == 0)
+            j++, DownloadList.push(TDownloadList), DownloadPath.push(TDownloadPath), DownloadFormat.push(TDownloadFormat);
     }
     for(let i = 0; i < DownloadList.length; i++) {
-        ParallelDownload(DownloadList[i], DownloadPath[i], 10);
+        await ParallelDownload(DownloadList[i], DownloadPath[i], 10, DownloadFormat[i]);
     }
 }
