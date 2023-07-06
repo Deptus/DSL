@@ -14,6 +14,7 @@ if(!dev)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 function createWindow() {
+    initClient()
     DownloadAsset({
         "id": "5",
         "sha1": "9d58fdd2538c6877fb5c5c558ebc60ee0b6d0e84",
@@ -21,7 +22,7 @@ function createWindow() {
         "totalSize": 617718799,
         "url": "https://piston-meta.mojang.com/v1/packages/9d58fdd2538c6877fb5c5c558ebc60ee0b6d0e84/5.json"
     })
-    initClient()
+    
     const win = new BrowserWindow({
         minWidth: 800,
         minHeight: 600,
