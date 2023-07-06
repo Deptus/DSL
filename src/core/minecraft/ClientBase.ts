@@ -5,3 +5,4 @@ const storePath = app.getPath("userData");
 const gamePath = `${storePath}/${platform() === "win32" ? ".minecraft" : "minecraft"}`;
 if(!fs.existsSync(gamePath))
     fs.mkdirSync(gamePath);
+export { gamePath };
