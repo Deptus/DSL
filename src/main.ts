@@ -4,9 +4,10 @@ import './core/Store'
 import './core/Logger'
 import './core/Config'
 import './core/Downloader'
-import { initClient } from './core/minecraft/ClientBase'
+import { initClient, gamePath } from './core/minecraft/ClientBase'
 import './core/minecraft/download/minecraft'
-import { DownloadAsset } from './core/minecraft/download/minecraft'
+import fs from 'fs'
+import { DownloadVersionIndex } from './core/minecraft/download/minecraft';
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
@@ -15,13 +16,7 @@ if(!dev)
 
 function createWindow() {
     initClient()
-    DownloadAsset({
-        "id": "5",
-        "sha1": "9d58fdd2538c6877fb5c5c558ebc60ee0b6d0e84",
-        "size": 411581,
-        "totalSize": 617718799,
-        "url": "https://piston-meta.mojang.com/v1/packages/9d58fdd2538c6877fb5c5c558ebc60ee0b6d0e84/5.json"
-    })
+    DownloadVersionIndex("1.20.1", "test")
     
     const win = new BrowserWindow({
         minWidth: 800,

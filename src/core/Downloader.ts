@@ -6,8 +6,8 @@ import { ipcMain, app } from 'electron';
 async function combineChunks(filepath: string, filename: string, numChunks: number) {
   const outputStream = fs.createWriteStream(path.join(filepath, filename));
   for (let i = 0; i < numChunks; i++) {
-    const chunkPath = path.join(app.getPath('temp'), `chunk-${i}.tmp`);
-    const inputStream = fs.createReadStream(chunkPath);
+    const chunkPath = path.join(app.getPath('temp'), `chunk-${i}.dsltmp`);
+    const inputStream = fs.createReadStream(chunkPath, {encoding: 'binary'});
     await new Promise((resolve) => {
       inputStream.pipe(outputStream, { end: false });
       inputStream.on('end', resolve);
@@ -67,7 +67,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
         const order = Number(\`${i}\`)
         if(url.startsWith('http://'))
             http.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.tmp\`));
+                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.dsltmp\`), {encoding: 'binary'});
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
@@ -76,7 +76,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
             })
         else
             https.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.tmp\`));
+                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.dsltmp\`), {encoding: 'binary'});
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
