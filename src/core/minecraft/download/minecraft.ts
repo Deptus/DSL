@@ -3,6 +3,7 @@ import { ParallelDownload, DownloadFile, nameMatch } from "src/core/Downloader";
 import { gamePath } from "../ClientBase";
 import fs, { PathLike } from "fs";
 import path from "path";
+import { platform, arch } from "os";
 
 export interface Version {
     id: string;
@@ -135,4 +136,130 @@ export async function DownloadVersionIndex(version: string, versionName: string)
     if(!fs.existsSync(versionPath))
         fs.mkdirSync(versionPath);
     await DownloadFile(versionIndex.url, versionPath, 1, 0, "");
+}
+
+export type Features =   "is_demo_user" |
+                         "has_custom_resolution" |
+                         "has_quick_plays_support" |
+                         "is_quick_play_singleplayer" |
+                         "is_quick_play_realms"
+
+export interface ArgumentGame {
+    rules: {
+        action: "allow" | "disallow";
+        features: {
+            [key in Features]: boolean;
+        }
+    }[],
+    value: string;
+}
+
+export interface ArgumentJVM {
+    rules: {
+        action: "allow" | "disallow";
+        os: {
+            name?: string,
+            arch?: string
+        }
+    }[],
+    value: string;
+}
+
+export function ArgumentJVMCheck(argument: ArgumentJVM): boolean {
+    const os = platform();
+    const SystemArch = arch();
+    let osFinal: string;
+    switch(os) {
+        case "win32":
+            osFinal = "windows";
+            break;
+        case "darwin":
+            osFinal = "osx";
+            break;
+        case "linux":
+            osFinal = "linux";
+            break;
+        default:
+            osFinal = "unknown";
+            break;
+    }
+    argument.rules.forEach((rule) => {
+        if(rule.os.name === undefined && rule.os.arch === undefined)
+            return false;
+        if(rule.os.name !== undefined && rule.os.name !== osFinal)
+            return false;
+        if(rule.os.arch !== undefined && rule.os.arch !== SystemArch)
+            return false;
+    })
+    return true;
+}
+
+export interface VersionIndex {
+    arguments: {
+        game: Array<ArgumentGame | string>;
+        jvm: Array<ArgumentJVM | string>;
+    };
+    assetIndex: AssetIndex;
+    assets: string;
+    complianceLevel: number;
+    downloads: {
+        client: {
+            sha1: string;
+            size: number;
+            url: string;
+        };
+        client_mappings: {
+            sha1: string;
+            size: number;
+            url: string;
+        };
+        server: {
+            sha1: string;
+            size: number;
+            url: string;
+        };
+        server_mappings: {
+            sha1: string;
+            size: number;
+            url: string;
+        };
+    };
+    id: string;
+    javaVersion: {
+        component: string;
+        majorVersion: number;
+    };
+    libraries: {
+        downloads: {
+            artifact: {
+                path: string;
+                sha1: string;
+                size: number;
+                url: string;
+            };
+            classifiers?: {
+                [key: string]: {
+                    path: string;
+                    sha1: string;
+                    size: number;
+                    url: string;
+                }
+            };
+        };
+        extract?: {
+            exclude?: string[];
+        };
+        name: string;
+        natives?: {
+            [key: string]: string;
+        }
+        rules: {
+            action: "allow" | "disallow";
+            os?: {
+                name?: string;
+                version?: string;
+                arch?: string;
+            }
+        }[];
+    }[];
 }
