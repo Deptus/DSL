@@ -253,7 +253,7 @@ export interface VersionIndex {
         natives?: {
             [key: string]: string;
         }
-        rules: {
+        rules?: {
             action: "allow" | "disallow";
             os?: {
                 name?: string;
@@ -262,4 +262,72 @@ export interface VersionIndex {
             }
         }[];
     }[];
+}
+
+export function LibraryCheck(library: { action: "allow" | "disallow"; os?: { name?: string; version?: string; arch?: string; } }) {
+    const os = platform();
+    const SystemArch = arch();
+    let osFinal: string;
+    switch(os) {
+        case "win32":
+            osFinal = "windows";
+            break;
+        case "darwin":
+            osFinal = "osx";
+            break;
+        case "linux":
+            osFinal = "linux";
+            break;
+        default:
+            osFinal = "unknown";
+            break;
+    }
+    if(library.os === undefined)
+        return false;
+    if(library.os.name !== undefined && library.os.name !== osFinal)
+        return false;
+    if(library.os.arch !== undefined && library.os.arch !== SystemArch)
+        return false;
+    return true;
+}
+
+export async function DownloadVersionLibraries(version: string, versionName: string) {
+    const versionIndex = versionInfo.get(version);
+    if(versionIndex === undefined)
+        throw new Error(`Unknown version: ${version}`);
+    const versionPath = `${gamePath}/versions/${versionName}`;
+    if(!fs.existsSync(versionPath))
+        fs.mkdirSync(versionPath);
+    const librariesPath = `${versionPath}/libraries`;
+    if(!fs.existsSync(librariesPath))
+        fs.mkdirSync(librariesPath);
+    const libraries = versionIndex.libraries;
+    for(let i = 0; i < libraries.length; i++) {
+        const library = libraries[i];
+        if(library.rules === undefined) {
+            if(library.downloads.artifact === undefined)
+                continue;
+            await DownloadFile(library.downloads.artifact.url, librariesPath, 1, 0, library.downloads.artifact.path);
+        } else {
+            let allow = true;
+            library.rules.forEach((rule) => {
+                if(rule.action === "allow") {
+                    if(!LibraryCheck(rule))
+                        allow = false;
+                } else {
+                    if(LibraryCheck(rule))
+                        allow = false;
+                }
+            })
+            if(!allow)
+                continue;
+            if(library.downloads.artifact === undefined)
+                continue;
+            await DownloadFile(library.downloads.artifact.url, librariesPath, 1, 0, library.downloads.artifact.path);
+        }
+    }
+}
+
+export async function DownloadVersion(version: string, versionName: string) {
+
 }
