@@ -301,7 +301,8 @@ export async function DownloadVersionLibraries(version: string, versionName: str
     const librariesPath = `${versionPath}/libraries`;
     if(!fs.existsSync(librariesPath))
         fs.mkdirSync(librariesPath);
-    const libraries = versionIndex.libraries;
+    const json = fs.readFileSync(`${versionPath}/${versionName}.json`, "utf-8");
+    const libraries = (JSON.parse(json) as VersionIndex).libraries;
     for(let i = 0; i < libraries.length; i++) {
         const library = libraries[i];
         if(library.rules === undefined) {
@@ -310,7 +311,7 @@ export async function DownloadVersionLibraries(version: string, versionName: str
             await DownloadFile(library.downloads.artifact.url, librariesPath, 1, 0, library.downloads.artifact.path);
         } else {
             let allow = true;
-            library.rules.forEach((rule) => {
+            library.rules.forEach((rule: { action: any; os?: { name?: string | undefined; version?: string | undefined; arch?: string | undefined; } | undefined; }) => {
                 if(rule.action === "allow") {
                     if(!LibraryCheck(rule))
                         allow = false;
