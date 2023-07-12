@@ -3,10 +3,10 @@ import { Worker } from 'worker_threads';
 import * as fs from 'fs';
 import { ipcMain, app } from 'electron';
 
-async function combineChunks(filepath: string, filename: string, numChunks: number) {
+async function combineChunks(filepath: string, filename: string, numChunks: number, order: number) {
   const outputStream = fs.createWriteStream(path.join(filepath, filename));
   for (let i = 0; i < numChunks; i++) {
-    const chunkPath = path.join(app.getPath('temp'), `chunk-${i}.dsltmp`);
+    const chunkPath = path.join(app.getPath('temp'), `chunk-${i}-${order}.dsltmp`);
     const inputStream = fs.createReadStream(chunkPath, {encoding: 'binary'});
     await new Promise((resolve) => {
       inputStream.pipe(outputStream, { end: false });
@@ -29,12 +29,14 @@ export function nameMatch(url: string, match: boolean) {
 }
 
 export async function DownloadFile(url: string, filepath: string, concurrency: number, order?: number, format?: string, filename?: string) {
+    if(order === undefined)
+      order = 0
     const response = await fetch(url)
     let nameRequired = !filename
     const nameMatched = nameMatch(url, nameRequired)
     let formatM = nameMatched != -1 ? nameMatched : ""
     if(!nameRequired)
-      formatM += filename
+      formatM = filename + formatM
     if(format)
       formatM += format
     const filelength = response.headers.get('Content-Length') ? response.headers.get('Content-Length')! : "1000000000"
@@ -67,7 +69,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
         const order = Number(\`${i}\`)
         if(url.startsWith('http://'))
             http.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.dsltmp\`), {encoding: 'binary'});
+                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`), {encoding: 'binary'});
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
@@ -76,7 +78,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
             })
         else
             https.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}.dsltmp\`), {encoding: 'binary'});
+                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`), {encoding: 'binary'});
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
@@ -90,7 +92,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
     await Promise.all(workers.map((worker, index) => new Promise((resolve) => {
       worker.on('message', (value) => { console.log(value); resolve(value) });
     })));
-    await combineChunks(filepath, formatM, concurrency);
+    await combineChunks(filepath, formatM, concurrency, order);
     console.log('Download complete!');
     return 0;
 }

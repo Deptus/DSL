@@ -7,7 +7,7 @@ import './core/Downloader'
 import { initClient, gamePath } from './core/minecraft/ClientBase'
 import './core/minecraft/download/minecraft'
 import fs from 'fs'
-import { DownloadVersionIndex } from './core/minecraft/download/minecraft';
+import { DownloadVersion, DownloadVersionIndex } from './core/minecraft/download/minecraft';
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
@@ -16,7 +16,7 @@ if(!dev)
 
 function createWindow() {
     initClient()
-    DownloadVersionIndex("1.20.1", "test")
+    DownloadVersion("1.20.1", "test")
     
     const win = new BrowserWindow({
         minWidth: 800,

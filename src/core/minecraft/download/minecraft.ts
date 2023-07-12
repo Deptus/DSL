@@ -77,7 +77,8 @@ export function ls(path: PathLike): string[] {
     return file;
 }
 
-export async function DownloadAsset(index: AssetIndex) {
+export async function DownloadAsset(version: string) {
+    const index: AssetIndex = await got.get(versionInfo.get(version)!.url).json<AssetIndex>();
     if(!fs.existsSync(`${gamePath}/assets`))
         fs.mkdirSync(`${gamePath}/assets`)
     if(!fs.existsSync(`${gamePath}/assets/indexes`))
@@ -135,7 +136,7 @@ export async function DownloadVersionIndex(version: string, versionName: string)
     const versionPath = `${gamePath}/versions/${versionName}`;
     if(!fs.existsSync(versionPath))
         fs.mkdirSync(versionPath);
-    await DownloadFile(versionIndex.url, versionPath, 1, 0, "");
+    await DownloadFile(versionIndex.url, versionPath, 1, 0, "", `${versionName}`);
 }
 
 export type Features =  "is_demo_user" |
@@ -295,13 +296,13 @@ export async function DownloadVersionLibraries(version: string, versionName: str
     const versionIndex = versionInfo.get(version);
     if(versionIndex === undefined)
         throw new Error(`Unknown version: ${version}`);
-    const versionPath = `${gamePath}/versions/${versionName}`;
+    const versionPath = `${gamePath}`;
     if(!fs.existsSync(versionPath))
         fs.mkdirSync(versionPath);
     const librariesPath = `${versionPath}/libraries`;
     if(!fs.existsSync(librariesPath))
         fs.mkdirSync(librariesPath);
-    const json = fs.readFileSync(`${versionPath}/${versionName}.json`, "utf-8");
+    const json = fs.readFileSync(`${versionPath}/versions/${versionName}/${versionName}.json`, "utf-8");
     const libraries = (JSON.parse(json) as VersionIndex).libraries;
     const urls = []
     const paths = []
@@ -310,8 +311,6 @@ export async function DownloadVersionLibraries(version: string, versionName: str
         if(library.rules === undefined) {
             if(library.downloads.artifact === undefined)
                 continue;
-            urls.push(library.downloads.artifact.url);
-            paths.push(library.downloads.artifact.path);
         } else {
             let allow = true;
             library.rules.forEach((rule: { action: any; os?: { name?: string | undefined; version?: string | undefined; arch?: string | undefined; } | undefined; }) => {
@@ -327,14 +326,33 @@ export async function DownloadVersionLibraries(version: string, versionName: str
                 continue;
             if(library.downloads.artifact === undefined)
                 continue;
-            urls.push(library.downloads.artifact.url);
-            paths.push(library.downloads.artifact.path);
         }
+        //create path
+        const path = library.downloads.artifact.path;
+        const pathSplit = path.split("/");
+        let pathFinal = "";
+        for(let i = 0; i < pathSplit.length - 1; i++) {
+            pathFinal += pathSplit[i] + "/";
+            if(!fs.existsSync(`${librariesPath}/${pathFinal}`))
+                fs.mkdirSync(`${librariesPath}/${pathFinal}`);
+        }
+        //path without filename
+        for(let i = path.length - 1; i >= 0; i--) {
+            if(path[i] === "/") {
+                pathFinal = path.substring(0, i);
+                break;
+            }
+        }
+        urls.push(library.downloads.artifact.url);
+        paths.push(`${librariesPath}/${pathFinal}`);
     }
     await ParallelDownload(urls, paths, 5);
     return;
 }
 
 export async function DownloadVersion(version: string, versionName: string) {
-    
+    await DownloadVersionIndex(version, versionName);
+    await DownloadVersionLibraries(version, versionName);
+    await DownloadAsset(version);
+    return;
 }
