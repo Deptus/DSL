@@ -138,11 +138,11 @@ export async function DownloadVersionIndex(version: string, versionName: string)
     await DownloadFile(versionIndex.url, versionPath, 1, 0, "");
 }
 
-export type Features =   "is_demo_user" |
-                         "has_custom_resolution" |
-                         "has_quick_plays_support" |
-                         "is_quick_play_singleplayer" |
-                         "is_quick_play_realms"
+export type Features =  "is_demo_user" |
+                        "has_custom_resolution" |
+                        "has_quick_plays_support" |
+                        "is_quick_play_singleplayer" |
+                        "is_quick_play_realms"
 
 export interface ArgumentGame {
     rules: {
@@ -303,12 +303,15 @@ export async function DownloadVersionLibraries(version: string, versionName: str
         fs.mkdirSync(librariesPath);
     const json = fs.readFileSync(`${versionPath}/${versionName}.json`, "utf-8");
     const libraries = (JSON.parse(json) as VersionIndex).libraries;
+    const urls = []
+    const paths = []
     for(let i = 0; i < libraries.length; i++) {
         const library = libraries[i];
         if(library.rules === undefined) {
             if(library.downloads.artifact === undefined)
                 continue;
-            await DownloadFile(library.downloads.artifact.url, librariesPath, 1, 0, library.downloads.artifact.path);
+            urls.push(library.downloads.artifact.url);
+            paths.push(library.downloads.artifact.path);
         } else {
             let allow = true;
             library.rules.forEach((rule: { action: any; os?: { name?: string | undefined; version?: string | undefined; arch?: string | undefined; } | undefined; }) => {
@@ -324,11 +327,14 @@ export async function DownloadVersionLibraries(version: string, versionName: str
                 continue;
             if(library.downloads.artifact === undefined)
                 continue;
-            await DownloadFile(library.downloads.artifact.url, librariesPath, 1, 0, library.downloads.artifact.path);
+            urls.push(library.downloads.artifact.url);
+            paths.push(library.downloads.artifact.path);
         }
     }
+    await ParallelDownload(urls, paths, 5);
+    return;
 }
 
 export async function DownloadVersion(version: string, versionName: string) {
-
+    
 }
