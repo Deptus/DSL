@@ -43,7 +43,7 @@ const config: ( env: { dev: boolean }, plugins?: WebpackPluginInstance[] ) => We
         },
         {
           test: /\.js$/,
-          exclude: /node_modules/, // 要排除
+          exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
             options: {
