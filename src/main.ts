@@ -7,16 +7,23 @@ import './core/Downloader'
 import { initClient, gamePath } from './core/minecraft/ClientBase'
 import './core/minecraft/download/minecraft'
 import fs from 'fs'
-import { DownloadVersion, DownloadVersionIndex } from './core/minecraft/download/minecraft';
+import { DownloadVersion, DownloadVersionIndex, VersionIndex } from './core/minecraft/download/minecraft';
+import Launch from './core/minecraft/launch';
+import { DownloadFile } from './core/Downloader';
 
 const dev = process.env.NODE_ENV !== 'development'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 if(!dev)
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-function createWindow() {
+async function createWindow() {
     initClient()
-    DownloadVersion("1.20.1", "test")
+    const json = fs.readFileSync(`${gamePath}/versions/test/test.json`, "utf-8");
+    const main = (JSON.parse(json) as VersionIndex).downloads.client.url;
+    await DownloadFile(main, `C:/Users/GBC03/Desktop`, 5, 100, "", "ll")
+    //await DownloadVersion("1.20.1", "test")
+    //await Launch("test", "5")
+
     
     const win = new BrowserWindow({
         minWidth: 800,
@@ -36,7 +43,7 @@ function createWindow() {
     win.once('ready-to-show', () => { win.show() })
 }
 const path = app.getPath("appData")
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
     protocol.interceptFileProtocol(
         "resource",
         (req: ProtocolRequest, callback: (filePath: string) => void) => {
@@ -44,7 +51,7 @@ app.whenReady().then(() => {
             callback(decodeURI(url));
         }
     );
-    createWindow();
+    await createWindow();
     console.log(path)
 })
  

@@ -19,5 +19,5 @@ export async function MCProfile(profileName: string, token: string) {
         }
     }).json() as MCProfile
     WriteUserData(profileName, "token", "mcprofile", Profile)
-    ipcRenderer.invoke("config", "logged_in", true)
+    //ipcRenderer.invoke("config", "logged_in", true)
 }

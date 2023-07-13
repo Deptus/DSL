@@ -40,7 +40,7 @@ export async function XboxLogin(profileName: string, token: MicrosoftOAuthToken)
         const Month = ExpireDate.substring(5, 7)
         const Day = ExpireDate.substring(8, 10)
         const Date = { year: parseInt(Year), month: parseInt(Month), day: parseInt(Day) }
-        ipcRenderer.invoke("config", "Xbox_expire_date", Date)
+        //ipcRenderer.invoke("config", "Xbox_expire_date", Date)
     }
     return (XboxAuthToken)
 } 

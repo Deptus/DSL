@@ -3,7 +3,7 @@ import { ParallelDownload, DownloadFile, nameMatch } from "src/core/Downloader";
 import { gamePath } from "../ClientBase";
 import fs, { PathLike } from "fs";
 import path from "path";
-import { platform, arch } from "os";
+import { platform, arch, version } from "os";
 
 export interface Version {
     id: string;
@@ -77,8 +77,9 @@ export function ls(path: PathLike): string[] {
     return file;
 }
 
-export async function DownloadAsset(version: string) {
-    const index: AssetIndex = await got.get(versionInfo.get(version)!.url).json<AssetIndex>();
+export async function DownloadAsset(versionName: string) {
+    const json = fs.readFileSync(`${gamePath}/versions/${versionName}/${versionName}.json`, "utf-8");
+    const index: AssetIndex = (JSON.parse(json) as VersionIndex).assetIndex;
     if(!fs.existsSync(`${gamePath}/assets`))
         fs.mkdirSync(`${gamePath}/assets`)
     if(!fs.existsSync(`${gamePath}/assets/indexes`))
@@ -90,6 +91,7 @@ export async function DownloadAsset(version: string) {
     if(!fs.existsSync(`${gamePath}/assets/virtual/legacy`))
         fs.mkdirSync(`${gamePath}/assets/virtual/legacy`);
     //indexes
+    console.log("Stop");
     await DownloadFile(index.url, `${gamePath}/assets/indexes`, 1, 0, "");
     //objects
     const objects = await got.get(index.url).json<AssetObject>();
@@ -303,6 +305,8 @@ export async function DownloadVersionLibraries(version: string, versionName: str
     if(!fs.existsSync(librariesPath))
         fs.mkdirSync(librariesPath);
     const json = fs.readFileSync(`${versionPath}/versions/${versionName}/${versionName}.json`, "utf-8");
+    const stream = fs.createWriteStream(`${gamePath}/versions/${versionName}/libraries.txt`);
+    const sep = platform() === 'win32' ? ';' : ':'; 
     const libraries = (JSON.parse(json) as VersionIndex).libraries;
     const urls = []
     const paths = []
@@ -329,6 +333,7 @@ export async function DownloadVersionLibraries(version: string, versionName: str
         }
         //create path
         const path = library.downloads.artifact.path;
+        stream.write(`${librariesPath}/${path}` + sep);
         const pathSplit = path.split("/");
         let pathFinal = "";
         for(let i = 0; i < pathSplit.length - 1; i++) {
@@ -345,14 +350,19 @@ export async function DownloadVersionLibraries(version: string, versionName: str
         }
         urls.push(library.downloads.artifact.url);
         paths.push(`${librariesPath}/${pathFinal}`);
+        
     }
+    stream.close();
     await ParallelDownload(urls, paths, 5);
     return;
 }
 
 export async function DownloadVersion(version: string, versionName: string) {
-    await DownloadVersionIndex(version, versionName);
+    //await DownloadVersionIndex(version, versionName);
     await DownloadVersionLibraries(version, versionName);
-    await DownloadAsset(version);
+    //await DownloadAsset(versionName);
+    const json = fs.readFileSync(`${gamePath}/versions/${versionName}/${versionName}.json`, "utf-8");
+    const main = (JSON.parse(json) as VersionIndex).downloads.client.url;
+    //await DownloadFile(main, `${gamePath}/versions/${versionName}`, 5, 1, "", versionName);
     return;
 }

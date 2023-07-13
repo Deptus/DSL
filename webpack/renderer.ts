@@ -18,7 +18,7 @@ const config: (env: { dev: boolean }) => WebpackConfiguration = ({ dev }) => ({
     new MiniCssExtractPlugin(),
     new HtmlPlugin({
       inject: true,
-      title: "Designer Launcher",
+      title: "DSL",
       meta: { charset: "utf8" },
       minify: true,
     }),
