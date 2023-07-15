@@ -353,7 +353,7 @@ export async function DownloadVersionLibraries(version: string, versionName: str
         
     }
     stream.close();
-    await ParallelDownload(urls, paths, 5);
+    await ParallelDownload(urls, paths, 1);
     return;
 }
 
@@ -363,6 +363,6 @@ export async function DownloadVersion(version: string, versionName: string) {
     //await DownloadAsset(versionName);
     const json = fs.readFileSync(`${gamePath}/versions/${versionName}/${versionName}.json`, "utf-8");
     const main = (JSON.parse(json) as VersionIndex).downloads.client.url;
-    //await DownloadFile(main, `${gamePath}/versions/${versionName}`, 5, 1, "", versionName);
+    await DownloadFile(main, `${gamePath}/versions/${versionName}`, 5, 100, "", versionName);
     return;
 }

@@ -7,7 +7,7 @@ async function combineChunks(filepath: string, filename: string, numChunks: numb
   const outputStream = fs.createWriteStream(path.join(filepath, filename));
   for (let i = 0; i < numChunks; i++) {
     const chunkPath = path.join(app.getPath('temp'), `chunk-${i}-${order}.dsltmp`);
-    const inputStream = fs.createReadStream(chunkPath, {encoding: 'binary'});
+    const inputStream = fs.createReadStream(chunkPath);
     await new Promise((resolve) => {
       inputStream.pipe(outputStream, { end: false });
       inputStream.on('end', resolve);
@@ -66,10 +66,10 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
         const path = require('path');
         
         const { url, start, end, tempPath } = workerData;
-        const order = Number(\`${i}\`)
+        const order = ${i}
         if(url.startsWith('http://'))
             http.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`), {encoding: 'binary'});
+                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`));
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
@@ -78,7 +78,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
             })
         else
             https.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`), {encoding: 'binary'});
+                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`));
                 res.pipe(stream);
                 res.on('end', () => {
                     stream.close();
@@ -98,18 +98,18 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
 }
 
 export async function ParallelDownload(urls: string[], filepath: string[], concurrency: number, format?: string[], filename?: string[]) {
-  const downloads = urls.map(async (url, index) => new Promise((resolve) => {
+  const downloads = urls.map((url, index) => new Promise((resolve) => {
     if(filename) {
       if(format)
-        DownloadFile(url, filepath[index], concurrency, index, format[index], filename[index]).then(() => resolve(0))
+        DownloadFile(url, filepath[index], concurrency, index + 100, format[index], filename[index]).then(() => resolve(0))
       else
-        DownloadFile(url, filepath[index], concurrency, index, "", filename[index]).then(() => resolve(0))
+        DownloadFile(url, filepath[index], concurrency, index + 100, "", filename[index]).then(() => resolve(0))
     }
     else {
       if(format)
-        DownloadFile(url, filepath[index], concurrency, index, format[index]).then(() => resolve(0))
+        DownloadFile(url, filepath[index], concurrency, index + 100, format[index]).then(() => resolve(0))
       else
-        DownloadFile(url, filepath[index], concurrency, index, "").then(() => resolve(0))
+        DownloadFile(url, filepath[index], concurrency, index + 100, "").then(() => resolve(0))
     }
   }))
   await Promise.all(downloads)
