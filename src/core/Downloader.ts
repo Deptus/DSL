@@ -7,12 +7,16 @@ async function combineChunks(filepath: string, filename: string, numChunks: numb
   const outputStream = fs.createWriteStream(path.join(filepath, filename));
   for (let i = 0; i < numChunks; i++) {
     const chunkPath = path.join(app.getPath('temp'), `chunk-${i}-${order}.dsltmp`);
-    const inputStream = fs.createReadStream(chunkPath);
-    await new Promise((resolve) => {
+    try {
+      const inputStream = fs.createReadStream(chunkPath);
       inputStream.pipe(outputStream, { end: false });
-      inputStream.on('end', resolve);
-    });
-    fs.unlinkSync(chunkPath);
+      await new Promise((resolve) => { inputStream.on('end', resolve) });
+      inputStream.close();
+      fs.unlinkSync(chunkPath);
+    }
+    catch {
+      continue;
+    }
   }
   outputStream.end();
 }
@@ -89,7 +93,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
         workers.push(worker)
     }
 
-    await Promise.all(workers.map((worker, index) => new Promise((resolve) => {
+    await Promise.all(workers.map((worker) => new Promise((resolve) => {
       worker.on('message', (value) => { console.log(value); resolve(value) });
     })));
     await combineChunks(filepath, formatM, concurrency, order);
