@@ -4,6 +4,7 @@ import "./css/main.css"
 import { ipcRenderer } from "electron";
 
 import { AuthenticateMC } from "src/core/Authenticate";
+import { NavBar } from "dsl-rcs";
 
 async function downloader() {
     AuthenticateMC();
@@ -12,9 +13,6 @@ async function downloader() {
 }
 export function MainPage() {
     return (
-        <>
-        <Entry/>
-        <button className="w-48" onClick={downloader}> Download </button>
-        </>
+        <NavBar/>
     )
 }

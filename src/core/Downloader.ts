@@ -43,7 +43,7 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
     console.log(`File is ${filelength} bytes long`)
     const chunks = parseInt(filelength)
     if(fs.existsSync(path.join(filepath, formatM)))
-        fs.rmSync(path.join(filepath, formatM))
+        fs.rmSync(path.join(filepath, formatM)) 
     const workers = []
     const worker_size = []
     if(!response.headers.get('Content-Length'))
@@ -54,42 +54,42 @@ export async function DownloadFile(url: string, filepath: string, concurrency: n
         let end = Math.floor((i + 1) * chunks / concurrency)
         worker_size.push(end - start)
         downloaded = end;
-        if(i == concurrency - 1)
+        if(i == concurrency - 1) 
           end = chunks
-        console.log(`Downloading chunk ${i} of ${concurrency}, from ${start} to ${end}`)
+        console.log(`Downloading chunk ${i} of ${concurrency}, from ${start} to ${end}`) 
         const tempPath = app.getPath('temp')
         const worker = new Worker(`
-        const { parentPort, workerData } = require('worker_threads');
-        const http = require('http');
-        const https = require('https');
-        const fs = require('fs');
-        const path = require('path');
-        
-        const { url, start, end, tempPath } = workerData;
-        const order = ${i}
-        if(url.startsWith('http://'))
-            http.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`));
-                res.pipe(stream);
-                res.on('end', () => {
-                    stream.close();
-                    parentPort.postMessage("Finished downloading chunk " + order + " of " + ${concurrency});
-                });
-            })
-        else
-            https.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
-                const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`));
-                res.pipe(stream);
-                res.on('end', () => {
-                    stream.close();
-                    parentPort.postMessage("Finished downloading chunk " + order + " of " + ${concurrency});
-                });
-            })
+          const { parentPort, workerData } = require('worker_threads');
+          const http = require('http');
+          const https = require('https');
+          const fs = require('fs');
+          const path = require('path');
+          
+          const { url, start, end, tempPath } = workerData;
+          const order = ${i}
+          if(url.startsWith('http://'))
+              http.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
+                  const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`));
+                  res.pipe(stream);
+                  res.on('end', () => {
+                      stream.close();
+                      parentPort.postMessage("Finished downloading chunk " + order + " of " + ${concurrency});
+                  });
+              })
+          else
+              https.get(url, { headers: { Range: \`bytes=\${start}-\${end - 1}\`, "Content-Type": "application/octet-stream" } }, (res) => {
+                  const stream = fs.createWriteStream(path.join(tempPath, \`chunk-${i}-${order}.dsltmp\`));
+                  res.pipe(stream);
+                  res.on('end', () => {
+                      stream.close();
+                      parentPort.postMessage("Finished downloading chunk " + order + " of " + ${concurrency});
+                  });
+              })
       `, { eval: true, workerData: { url, start, end, tempPath } });
         workers.push(worker)
     }
 
-    await Promise.all(workers.map((worker, index) => new Promise((resolve) => {
+    await Promise.all(workers.map((worker) => new Promise((resolve) => {
       worker.on('message', (value) => { console.log(value); resolve(value) });
     })));
     await combineChunks(filepath, formatM, concurrency, order);

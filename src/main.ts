@@ -21,8 +21,8 @@ async function createWindow() {
     const json = fs.readFileSync(`${gamePath}/versions/test/test.json`, "utf-8");
     const main = (JSON.parse(json) as VersionIndex).downloads.client.url;
     //await DownloadFile(main, `C:/Users/GBC03/Desktop`, 5, 100, "", "ll")
-    await DownloadVersion("1.20.1", "test")
-    await Launch("test", "5")
+   // await DownloadVersion("1.20.1", "test")
+    //await Launch("test", "5")
 
     
     const win = new BrowserWindow({

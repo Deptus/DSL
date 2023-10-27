@@ -93,7 +93,7 @@ export async function DownloadAsset(versionName: string) {
     //indexes
     console.log("Stop");
     await DownloadFile(index.url, `${gamePath}/assets/indexes`, 1, 0, "");
-    //objects
+    //objects 
     const objects = await got.get(index.url).json<AssetObject>();
     const objectsInfo = objects.objects
     let i = 0, j = 0;
