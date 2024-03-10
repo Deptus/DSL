@@ -1,12 +1,13 @@
 import { defineConfig } from "electron-vite";
 import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
 
 export default defineConfig({
     renderer: {
         root: "src/",
         build: {
             outDir: "../dist/renderer",
-            rollupOptions: { input: "index.html" }
+            rollupOptions: { input: { main: resolve(__dirname, "src/index.html"), dynamic_island: resolve(__dirname, "src/dynamic_island/index.html") } }
         },
         plugins: [vue()]
     },
