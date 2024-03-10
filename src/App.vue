@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 
 </script>
 <template>
@@ -11,13 +11,13 @@
 .titleBar {
   -webkit-app-region: drag;
   width: 100%;
-  height: 40px;
+  height: 60px;
   background-color: #2E2E2E;
 }
 #app {
   width: 100%;
   height: 100%;
-  -webkit-user-select: none;
+  user-select: none;
   padding: 0%;
 }
 body {
