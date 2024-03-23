@@ -10,6 +10,7 @@
     "preview": "electron-vite preview"
   },
   "dependencies": {
+    "compressing": "^1.10.0",
     "got": "^14.2.0",
     "vue": "^3.4.19",
     "vue-router": "4"

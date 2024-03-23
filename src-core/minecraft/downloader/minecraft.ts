@@ -143,6 +143,8 @@ export class MinecraftDownloadInstance {
 
         for(let library in versions.libraries) {
             const lib = versions.libraries[library];
+            if(!checkLib(lib))
+                continue;
             let systemArch: string = arch();
             switch (systemArch) {
                 case "x32":
@@ -156,14 +158,39 @@ export class MinecraftDownloadInstance {
                     break;
             }
 
-            const pathParsing = (path: string) => {
-                if(fs.existsSync(resolve(this.gamePath, path)))
-                    fs.mkdirSync
-            }
-
             //Check if the library is native
-            if(lib.natives) {
+            if(lib.natives && lib.downloads.classifiers) {
+                let os: string = platform();
+            
+                switch(os) {
+                    case "darwin":
+                        os = "macos";
+                        break;
+                    case "linux":
+                        break;
+                    case "win32":
+                        os = "windows";
+                        break;
+                }
+
+                const index = lib.natives[os];
+                if(index.includes("${arch}"))
+                    index.replace("${arch}", systemArch);
+
+                const libPath = lib.downloads.classifiers[index].path;
+                const libPaths: string[] = [];
+                const libPathLen = lib.downloads.classifiers[index].path.length;
+                let k = 0;
+                for(let i = 0; i < libPathLen; i++) 
+                    if(libPath[i] === '/') {
+                        libPaths[k] = libPath.substring(0, i);
+                        k++;
+                    }
                 
+                libPaths.forEach((v) => {
+                    if(!fs.existsSync(resolve(this.gamePath, v)))
+                        fs.mkdirSync(resolve(this.gamePath, v))
+                })
             } else {
 
             }
