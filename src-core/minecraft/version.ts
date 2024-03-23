@@ -65,6 +65,15 @@ export interface JVMArguments {
     value: string;
 }
 
+export interface LibraryRules {
+    action: "allow" | "disallow";
+    os ?: {
+        name?: string;
+        version?: string;
+        arch?: string;
+    }
+}
+
 export interface MinecraftLibraryIndex {
     downloads: {
         artifact?: {
@@ -89,14 +98,7 @@ export interface MinecraftLibraryIndex {
     natives?: {
         [key: string]: string;
     }
-    rules?: {
-        action: "allow" | "disallow";
-        os?: {
-            name?: string;
-            version?: string;
-            arch?: string;
-        }
-    }[];
+    rules?: LibraryRules[];
 }
 
 export interface Version {
@@ -135,4 +137,10 @@ export interface Version {
         majorVersion: number;
     };
     libraries: MinecraftLibraryIndex[];
+    mainClass: string;
+    minecraftArguments?: string;
+    minimumLauncherVersion: number;
+    releaseTime?: string;
+    time?: string;
+    type: "snapshot" | "release" | "old_alpha" | "old_beta";
 }
